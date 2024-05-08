@@ -8,7 +8,7 @@ export interface MermaidProps {
   text: string;
   nodeKey: NodeKey;
 }
-
+mermaid.initialize({});
 export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
   const [mermaidText, setMermaidText] = useState<string>(text);
   const [svg, setSvg] = useState<string>("");
@@ -17,6 +17,7 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
 
   useEffect(() => {
     setMermaidText(text);
+    renderMermaid();
   }, [text]);
 
   const lineCount = useMemo(() => mermaidText.split("\n").length, [mermaidText]);
@@ -24,13 +25,9 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
   const [editor] = useLexicalComposerContext();
   const toggleMode = () => {
     setMode(mode === "preview" ? "edit" : "preview");
-    console.log("toggle mode", mode);
-    renderMermaid();
   };
   useEffect(() => {
-    mermaid.initialize({});
     mermaid.contentLoaded();
-    renderMermaid();
   }, []);
 
   async function renderMermaid() {
@@ -38,15 +35,15 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
       const mermaidId = `mermaid-${nodeKey}`;
       const isValid = await mermaid.parse(mermaidText);
       if (isValid) {
-        const { svg } = await mermaid.render(mermaidId, mermaidText);
-        setSvg(svg);
-        setError("");
         editor.update(() => {
           const node = $getNodeByKey(nodeKey);
           if ($isMermaidNode(node)) {
             node.setText(mermaidText);
           }
         });
+        const { svg } = await mermaid.render(mermaidId, mermaidText);
+        setSvg(svg);
+        setError("");
       } else {
         setSvg("");
         setError("Invalid Mermaid text");
@@ -62,7 +59,7 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
   }, [mermaidText]);
 
   return (
-    <div className=" relative group">
+    <div className=" relative group bg-secondary" style={{ minHeight: "200px" }}>
       <button
         className="absolute top-2 right-2 hover:bg-secondary px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
         onClick={() => {
@@ -84,7 +81,7 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
       {error && <div className="text-red-500">{error}</div>}
       {mode === "preview" && (
         <div
-          className="bg-secondary p-2 flex items-center justify-center"
+          className="p-2 flex items-center justify-center"
           dangerouslySetInnerHTML={{
             __html: svg,
           }}

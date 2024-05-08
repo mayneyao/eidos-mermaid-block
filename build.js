@@ -6,6 +6,7 @@ const packagesToReplace = [
   "react",
   "lexical",
   "@lexical/utils",
+  "@lexical/markdown",
   "@lexical/react/LexicalComposerContext",
   "@lexical/react/LexicalBlockWithAlignableContents",
 ];

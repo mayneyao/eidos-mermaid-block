@@ -1,5 +1,5 @@
 import { LexicalEditor } from "lexical";
-import { MermaidNode } from "./node";
+import { MERMAID_NODE_TRANSFORMER, MermaidNode } from "./node";
 import { INSERT_MERMAID_COMMAND, MermaidPlugin } from "./plugin";
 
 const text = `
@@ -16,4 +16,8 @@ export default {
   icon: "AreaChart",
   keywords: ["Mermaid", "chart"],
   onSelect: (editor: LexicalEditor) => editor.dispatchCommand(INSERT_MERMAID_COMMAND, text),
+  command: {
+    create: INSERT_MERMAID_COMMAND,
+  },
+  transform: MERMAID_NODE_TRANSFORMER,
 };

@@ -1,5 +1,6 @@
 import { DecoratorNode, EditorConfig, LexicalEditor, LexicalNode, NodeKey } from "lexical";
 
+import { TextMatchTransformer } from "@lexical/markdown";
 import { BlockWithAlignableContents } from "@lexical/react/LexicalBlockWithAlignableContents";
 import { ReactNode } from "react";
 import { Mermaid } from "./component";
@@ -70,3 +71,23 @@ export function $createMermaidNode(text: string): MermaidNode {
 export function $isMermaidNode(node: LexicalNode | null | undefined): node is MermaidNode {
   return node instanceof MermaidNode;
 }
+
+export const MERMAID_NODE_TRANSFORMER: TextMatchTransformer = {
+  dependencies: [MermaidNode],
+  export: (node: LexicalNode) => {
+    if (!$isMermaidNode(node)) {
+      return null;
+    }
+    const textContent = node.getTextContent();
+    return "```" + (node.__text || "") + (textContent ? "\n" + textContent : "") + "\n" + "```";
+  },
+  importRegExp: /```mermaid([\s\S]*?)```/g,
+  regExp: /```mermaid([\s\S]*?)```/g,
+  replace: (textNode, match) => {
+    const text = match[1].trim();
+    const imageNode = $createMermaidNode(text);
+    textNode.replace(imageNode);
+  },
+  trigger: "```",
+  type: "text-match",
+};
