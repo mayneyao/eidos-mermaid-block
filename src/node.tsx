@@ -1,0 +1,72 @@
+import { DecoratorNode, EditorConfig, LexicalEditor, LexicalNode, NodeKey } from "lexical";
+
+import { BlockWithAlignableContents } from "@lexical/react/LexicalBlockWithAlignableContents";
+import { ReactNode } from "react";
+import { Mermaid } from "./component";
+
+export class MermaidNode extends DecoratorNode<ReactNode> {
+  __text: string;
+
+  static getType(): string {
+    return "mermaid";
+  }
+
+  static clone(node: MermaidNode): MermaidNode {
+    return new MermaidNode(node.__text, node.__key);
+  }
+
+  constructor(text: string, key?: NodeKey) {
+    super(key);
+    this.__text = text;
+  }
+
+  setText(text: string) {
+    const writable = this.getWritable();
+    writable.__text = text;
+  }
+
+  createDOM(): HTMLElement {
+    return document.createElement("div");
+  }
+
+  updateDOM(): false {
+    return false;
+  }
+
+  exportJSON(): any {
+    return {
+      type: MermaidNode.getType(),
+      __text: this.__text,
+    };
+  }
+
+  static importJSON(_serializedNode: any) {
+    return new MermaidNode(_serializedNode.__text);
+  }
+
+  decorate(_editor: LexicalEditor, config: EditorConfig): ReactNode {
+    if (this.__text.length === 0 || this.__text == null) {
+      return <div>Empty Mermaid text</div>;
+    }
+    const nodeKey = this.getKey();
+    const embedBlockTheme = config.theme.embedBlock || {};
+
+    const className = {
+      base: embedBlockTheme.base || "",
+      focus: embedBlockTheme.focus || "",
+    };
+    return (
+      <BlockWithAlignableContents className={className} nodeKey={nodeKey}>
+        <Mermaid text={this.__text} nodeKey={this.__key} />
+      </BlockWithAlignableContents>
+    );
+  }
+}
+
+export function $createMermaidNode(text: string): MermaidNode {
+  return new MermaidNode(text);
+}
+
+export function $isMermaidNode(node: LexicalNode | null | undefined): node is MermaidNode {
+  return node instanceof MermaidNode;
+}

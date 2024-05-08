@@ -1,0 +1,28 @@
+{
+  "name": "eidos-mermaid-block",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js && shx cp -r dist/index.js D:/eidos-data-001/static/blocks/video-block",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "esbuild": "0.21.1",
+    "shx": "^0.3.4",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@lexical/react": "^0.14.5",
+    "@lexical/utils": "^0.14.5",
+    "lexical": "^0.14.5",
+    "lucide-react": "^0.378.0",
+    "mermaid": "^10.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
