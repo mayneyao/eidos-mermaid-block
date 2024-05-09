@@ -1,7 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getNodeByKey, NodeKey } from "lexical";
 import mermaid from "mermaid";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { $isMermaidNode } from "./node";
 
 export interface MermaidProps {
@@ -30,14 +30,14 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
     mermaid.contentLoaded();
   }, []);
 
-  async function renderMermaid() {
+  const renderMermaid = useCallback(async () => {
     try {
       const mermaidId = `mermaid-${nodeKey}`;
       const isValid = await mermaid.parse(mermaidText);
       if (isValid) {
         editor.update(() => {
           const node = $getNodeByKey(nodeKey);
-          if ($isMermaidNode(node)) {
+          if (text !== mermaidText && $isMermaidNode(node)) {
             node.setText(mermaidText);
           }
         });
@@ -52,7 +52,7 @@ export const Mermaid: React.FC<MermaidProps> = ({ text, nodeKey }) => {
       setSvg("");
       setError("Invalid Mermaid text");
     }
-  }
+  }, [mermaidText, text]);
 
   useEffect(() => {
     renderMermaid();

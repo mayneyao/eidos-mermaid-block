@@ -1,5 +1,5 @@
 import { LexicalEditor } from "lexical";
-import { MERMAID_NODE_TRANSFORMER, MermaidNode } from "./node";
+import { $createMermaidNode, MERMAID_NODE_TRANSFORMER, MermaidNode } from "./node";
 import { INSERT_MERMAID_COMMAND, MermaidPlugin } from "./plugin";
 
 const text = `
@@ -19,5 +19,7 @@ export default {
   command: {
     create: INSERT_MERMAID_COMMAND,
   },
+  createNode: $createMermaidNode,
   transform: MERMAID_NODE_TRANSFORMER,
+  markdownLanguage: "mermaid",
 };

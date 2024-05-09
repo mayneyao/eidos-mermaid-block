@@ -81,8 +81,10 @@ export const MERMAID_NODE_TRANSFORMER: TextMatchTransformer = {
     const textContent = node.getTextContent();
     return "```" + (node.__text || "") + (textContent ? "\n" + textContent : "") + "\n" + "```";
   },
-  importRegExp: /```mermaid([\s\S]*?)```/g,
-  regExp: /```mermaid([\s\S]*?)```/g,
+  // not working cause the bug
+  // https://github.com/facebook/lexical/issues/2564
+  importRegExp: /```mermaid([\s\S]*?)```/,
+  regExp: /```mermaid([\s\S]*?)```$/,
   replace: (textNode, match) => {
     const text = match[1].trim();
     const imageNode = $createMermaidNode(text);
